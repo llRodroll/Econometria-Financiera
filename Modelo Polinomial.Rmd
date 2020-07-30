@@ -73,3 +73,63 @@ grid()                                                 # agrega lineas secundari
 *Nota 2: De nuevo existen muchas formas de graficar en R, esta es solo una pequeña muestra sobre como mejorar los graficos. La libreria mas recomendanda para graficar es ggplot2.*
 
 ¿Que elementos, componentes o hechos relevantes puede identificar?
+
+# 2. Estimacion
+
+## 2.1. Creacion de variables
+
+Una vez identificado un candidato de polinomio de grado 6 mas 3 dummies para enero, octubre y noviembre. Es decir, es necesario crear dichas variables $t$ y sus transformaciones $t^p$ con $p=1,2,3,...$ mas la dummies que ayudan a incorporar estacionalidad, cambios estructurales o comportamiento atipicos. Para ello se requiere ejecutar las siguientes lineas:
+
+*Nota: Este es un proceso iterativo, el grado del polinomio y las dummies correspondientes son producto de realizar varias estimaciones hasta encontrar el "mejor" modelo*
+
+```{r dx}
+# Crear la variable "t"
+
+N  = length(td)  
+t  = seq(1,N)
+t2 = t^2
+t3 = t^3
+t4 = t^4
+t5 = t^5
+t6 = t^6
+
+# Crear las dummies
+
+dene = as.numeric(months(Fecha) == "January")   # estacionalidad
+doct = as.numeric(months(Fecha) == "October")   # estacionalidad
+dnov = as.numeric(months(Fecha) == "November")  # estacionalidad
+d20  = as.numeric(Fecha >="2020-04-01")         # Pandemia 2020
+```
+
+## 2.2. Estimacion
+
+La regresion queda guardada en R_pol y con la funcion "summary" se obtiene el resultado de dicha regresion es una presentacion muy similar a la de otros paquetes estadisticos.
+
+```{r reg}
+dr     = data.frame(td,t,t2,t3,t4,t5,t6,dene,doct,dnov, d20, row.names = Fecha)
+R_pol = lm(td~., data = dr)
+summary(R_pol)
+```
+
+Note que el data.frame llamado "dr" esta ubicado en el espacio de Data del Enviroement, y al hacer clic se ve cuales son sus elementos. Ademas, en la funcion "lm" se debe establecer que los datos a utilizar son el grupo que se creo "dr". De ahora en adelante se sugiere seguir utilizando las estructuras de data.frame en la medida que facilitan mucho la programacion.
+
+¿Cuales son las conclusiones de las pruebas de significancia indivual?
+¿Como se interpretan los coeficientes de las dummies?
+
+## 2.3. Analisis Grafico: Observado vs Estimado
+
+Si bien aun no se han analizado los supuestos, en este punto es conveniente "revisar" cual es la Tasa de Desempleo que esta estimando el modelo versus la Tasa de Desemplo Observada.
+
+```{r g3}
+tmp = cbind(td,R_pol$fitted.values)                    # variable que agrupa Observado y Estimado
+matplot(tmp,type="l",
+        lwd = c(2,2),
+        col = c("black","red"),
+        ylab='Porcentaje', xlab='')
+title(main = "Tasa de Desemplo Nacional \n 2001-2020") # \n genera una segunda linea en el titulo
+legend(x = "topleft", legend = c("Obs.","Est."),
+       lty = c(1,2), lwd = c(2,2), col = c("black","red") ) # agrega leyenda al grafico
+grid()                                                 # agrega lineas secundarias
+```
+
+¿Que se puede inferir del grafico acerca del ajuste del modelo?
