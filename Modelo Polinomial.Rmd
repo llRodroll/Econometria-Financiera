@@ -1,0 +1,28 @@
+---
+title: "Modelo Polinomial"
+author: "Rodrigo Velez"
+date: "30/07/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Aspectos Iniciales
+
+* La escritura se hace sin tildes para evitar problemas a la hora correr el codigo.
+* Existe una forma de arreglar este problema, pero puede llegar a ser engorrosa.
+* Al momento de abrir un nuevo archivo y elegir Rmarkdown, se deberian instalar automaticamente los paquetes necesarios.
+
+
+## Borrar Enviroment
+
+Por costumbre y como practica de programacion, se sugiere siempre a borrar al "Enviorment", el cual es el espacio donde se almacenan los datos a importar asi como todos los objetos creados en el codigo.
+
+```{r be}
+rm(list=ls())
+```
+
+## XXXX
