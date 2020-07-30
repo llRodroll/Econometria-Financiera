@@ -40,4 +40,36 @@ library(readxl)
 desempleo <- read_excel("C:/Users/Rodro/Documents/R/Econometria-Financiera/BD_TD.xlsx")
 ```
 
-*Nota 2: La direccion de archivo se debe poner con / en vez de \, y se finaliza con el nombre del archivo*
+*Nota 2: La direccion de archivo se debe poner con / en vez de backslash, y se finaliza con el nombre del archivo*
+
+## 1.2. Definicion de variables
+
+*Nota 1: Para garantizar que las funciones y librerias a usar funcionen adecuadamente se debe definir las variable a trabajar como serie de tiempo y la fecha en formato de fecha de R*
+
+```{r def}
+td = desempleo$TD
+td = ts(td, start = c(2001,1), end = c(2020,5), frequency = 12)
+Fecha  = as.Date(desempleo$Fecha, format="%Y-%m")
+```
+
+*Nota 2: Existen mil formas de definir las variables, utilizando diferentes paquetes. El codigo anterior es solo una de ellas*
+
+## 1.2. Analisis grafico
+
+*Nota 1: Se sugiere siempre graficar la serie e identificar sus componentes y/o comportamiento que llamen la atencion y contribuyan a la modelacion*
+
+```{r g1}
+plot(td,type="l") # type="l" significa grafico de linea
+```
+
+El codigo anterior crea un grafico bastante sencillo que para un analisis rapido puede ser util. Sin embargo, para propositos de una presentacion se puede hacer algo mas presentable.
+
+```{r g2}
+plot(td,type="l", ylab='Porcentaje', xlab='')
+title(main = "Tasa de Desemplo Nacional \n 2001-2020") # \n genera una segunda linea en el titulo
+grid()                                                 # agrega lineas secundarias
+```
+
+*Nota 2: De nuevo existen muchas formas de graficar en R, esta es solo una pequeña muestra sobre como mejorar los graficos. La libreria mas recomendanda para graficar es ggplot2.*
+
+¿Que elementos, componentes o hechos relevantes puede identificar?
