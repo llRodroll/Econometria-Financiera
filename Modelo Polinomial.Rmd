@@ -25,4 +25,19 @@ Por costumbre y como practica de programacion, se sugiere siempre a borrar al "E
 rm(list=ls())
 ```
 
-## XXXX
+# 1. Base de datos - Variable
+
+*Nota: En esta seccion tenga en cuenta que se debe describir como minimo: Nombre de la Variable, Fuente de informacion, Unidades, Periodo de analisis, Frecuencia o Periodicidad*
+
+La variable a utilizar es la Tasa de Desempleo Nacional (sin desestacionalizar) de Colombia, calculada y publicada por el Departamento Administrativo Nacional de Estadisticas (DANE). La variable esta en porcentaje, para un periodo desde enero de 2001 hasta mayo de 2020 (233 observaciones) con frecuencia mensual. 
+
+## 1.1. Importar Base
+
+*Nota 1: Es posible importar bases de datos en diferentes formatos, en este caso se utiliza el formato .xlsx de excel. Es necesario instalar la libreria readxl*
+
+```{r importar}
+library(readxl)
+desempleo <- read_excel("C:/Users/Rodro/Documents/R/Econometria-Financiera/BD_TD.xlsx")
+```
+
+*Nota 2: La direccion de archivo se debe poner con / en vez de \, y se finaliza con el nombre del archivo*
