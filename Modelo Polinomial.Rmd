@@ -126,10 +126,10 @@ matplot(tmp,type="l",
         lwd = c(2,2),
         col = c("black","red"),
         ylab='Porcentaje', xlab='')
-title(main = "Tasa de Desemplo Nacional \n 2001-2020") # \n genera una segunda linea en el titulo
+title(main = "Tasa de Desemplo Nacional \n 2001-2020")     # \n genera una segunda linea en el titulo
 legend(x = "topleft", legend = c("Obs.","Est."),
-       lty = c(1,2), lwd = c(2,2), col = c("black","red") ) # agrega leyenda al grafico
-grid()                                                 # agrega lineas secundarias
+       lty = c(1,2), lwd = c(2,2), col = c("black","red")) # agrega leyenda al grafico
+grid()                                                     # agrega lineas secundarias
 ```
 
 ¿Que se puede inferir del grafico acerca del ajuste del modelo?
