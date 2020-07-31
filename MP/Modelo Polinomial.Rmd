@@ -37,7 +37,7 @@ La variable a utilizar es la Tasa de Desempleo Nacional (sin desestacionalizar) 
 
 ```{r importar}
 library(readxl)
-desempleo <- read_excel("C:/Users/Rodro/Documents/R/Econometria-Financiera/BD_TD.xlsx")
+desempleo <- read_excel("C:/Users/Rodro/Documents/R/Econometria-Financiera/MP/BD_TD.xlsx")
 ```
 
 *Nota 2: La direccion de archivo se debe poner con / en vez de backslash, y se finaliza con el nombre del archivo*
@@ -121,7 +121,7 @@ Note que el data.frame llamado "dr" esta ubicado en el espacio de Data del Envir
 Si bien aun no se han analizado los supuestos, en este punto es conveniente "revisar" cual es la Tasa de Desempleo que esta estimando el modelo versus la Tasa de Desemplo Observada.
 
 ```{r g3}
-tmp = cbind(td,R_pol$fitted.values)                    # variable que agrupa Observado y Estimado
+tmp = cbind(td,R_pol$fitted.values)                        # variable que agrupa Observado y Estimado
 matplot(tmp,type="l",
         lwd = c(2,2),
         col = c("black","red"),
@@ -133,3 +133,7 @@ grid()                                                     # agrega lineas secun
 ```
 
 ¿Que se puede inferir del grafico acerca del ajuste del modelo?
+xxxxx
+xxxxx
+xxxxx
+jhkhkjjhjhghg
