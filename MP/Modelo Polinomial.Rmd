@@ -133,7 +133,3 @@ grid()                                                     # agrega lineas secun
 ```
 
 ¿Que se puede inferir del grafico acerca del ajuste del modelo?
-xxxxx
-xxxxx
-xxxxx
-jhkhkjjhjhghg
