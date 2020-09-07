@@ -160,3 +160,69 @@ grid()                                                     # agrega lineas secun
 ```
 
 ¿Qué se puede inferir del gráfico acerca del ajuste del modelo?
+
+# 3. Pronósticos
+
+## 3.1. División de la muestra
+
+A continuación, se busca realizar un pronóstico con submuestra de prueba. Es decir, se re-estima el modelo hasta 2020-04 y la proyección se realiza para 2020-05/2020-06.
+
+*Nota: Recuerde que algunas líneas atrás, ya se creó un data frame con todas las observaciones llamado dr*
+
+```{r frames}
+# Definir el subconjunto de observaciones para realizar la re-estimacion
+
+s_bd = subset.data.frame(dr, Fecha<="2020-04-01")
+
+# Definir el subconjunto de observaciones para comparar el pronóstico
+
+o_bd = subset.data.frame(dr, Fecha>="2020-05-01")
+
+```
+
+## 3.2. Re-estimación del modelo y Comprobación de Supuestos
+
+*Nota: La re-estimación del modelo con la submuestra debe cumplir con la significancia y los supuestos*
+
+```{r reg2}
+R_pol2 = lm(td~., data = s_bd)
+summary(R_pol2)
+```
+
+```{r rsupuestos2}
+
+e_hat2 = R_pol2$residuals
+
+#No Autocorrelación (Breusch-Godfrey Test)
+library(lmtest)
+bgtest(R_pol2, order = 6)
+
+# Normalidad
+library(tseries)
+jarque.bera.test(e_hat2)
+
+# Homocedasticidad (Breusch-Pagan Test)
+bptest(R_pol2)
+
+```
+
+## 3.3. Pronóstico
+
+```{r pred}
+
+# Predicción
+pred = predict(R_pol2, newdata = o_bd, interval = "prediction")
+pred
+
+```
+
+## 3.4. Medidas de error de pronóstico
+
+```{r errped}
+
+library(Metrics)
+rmse(o_bd$td,pred[,1])
+mae(o_bd$td,pred[,1])
+mape(o_bd$td,pred[,1])*100
+
+```
