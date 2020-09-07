@@ -48,7 +48,7 @@ desempleo <- read_excel("C:/Users/Rodro/Documents/R/Econometria-Financiera/MP/BD
 
 ```{r def}
 td = desempleo$TD
-td = ts(td, start = c(2001,1), end = c(2020,5), frequency = 12)
+td = ts(td, start = c(2001,1), end = c(2020,6), frequency = 12)
 Fecha  = as.Date(desempleo$Fecha, format="%Y-%m")
 ```
 
@@ -159,4 +159,4 @@ legend(x = "topleft", legend = c("Obs.","Est."),
 grid()                                                     # agrega lineas secundarias
 ```
 
-¿Que se puede inferir del grafico acerca del ajuste del modelo?
+¿Qué se puede inferir del gráfico acerca del ajuste del modelo?
