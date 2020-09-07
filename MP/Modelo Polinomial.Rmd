@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 * La escritura se hace sin tildes para evitar problemas a la hora correr el código.
 * Existe una forma de arreglar este problema, pero puede llegar a ser engorrosa.
-* Al momento de abrir un nuevo archivo y elegir Rmarkdown, se deberian instalar automaticamente los paquetes necesarios.
+* Al momento de abrir un nuevo archivo y elegir Rmarkdown, se deberian instalar automáticamente los paquetes necesarios.
 
 
 ## Borrar Enviroment
@@ -27,7 +27,7 @@ rm(list=ls())
 
 # 1. Base de datos - Variable
 
-*Nota: En esta seccion tenga en cuenta que se debe describir como minimo: Nombre de la Variable, Fuente de informacion, Unidades, Periodo de analisis, Frecuencia o Periodicidad*
+*Nota: En esta sección tenga en cuenta que se debe describir como mínimo: Nombre de la Variable, Fuente de información, Unidades, Periodo de análisis, Frecuencia o Periodicidad*
 
 La variable a utilizar es la Tasa de Desempleo Nacional (sin desestacionalizar) de Colombia, calculada y publicada por el Departamento Administrativo Nacional de Estadisticas (DANE). La variable esta en porcentaje, para un periodo desde enero de 2001 hasta mayo de 2020 (233 observaciones) con frecuencia mensual. 
 
@@ -40,9 +40,9 @@ library(readxl)
 desempleo <- read_excel("C:/Users/Rodro/Documents/R/Econometria-Financiera/MP/BD_TD.xlsx")
 ```
 
-*Nota 2: La direccion de archivo se debe poner con / en vez de backslash, y se finaliza con el nombre del archivo*
+*Nota 2: La dirección de archivo se debe poner con / en vez de backslash, y se finaliza con el nombre del archivo*
 
-## 1.2. Definicion de variables
+## 1.2. Definición de variables
 
 *Nota 1: Para garantizar que las funciones y librerias a usar funcionen adecuadamente se debe definir las variable a trabajar como serie de tiempo y la fecha en formato de fecha de R*
 
@@ -52,17 +52,17 @@ td = ts(td, start = c(2001,1), end = c(2020,5), frequency = 12)
 Fecha  = as.Date(desempleo$Fecha, format="%Y-%m")
 ```
 
-*Nota 2: Existen mil formas de definir las variables, utilizando diferentes paquetes. El codigo anterior es solo una de ellas*
+*Nota 2: Existen mil formas de definir las variables, utilizando diferentes paquetes. El código anterior es solo una de ellas*
 
-## 1.2. Analisis grafico
+## 1.3. Análisis gráfico
 
-*Nota 1: Se sugiere siempre graficar la serie e identificar sus componentes y/o comportamiento que llamen la atencion y contribuyan a la modelacion*
+*Nota 1: Se sugiere siempre graficar la serie e identificar sus componentes y/o comportamiento que llamen la atención y contribuyan a la modelación*
 
 ```{r g1}
 plot(td,type="l") # type="l" significa grafico de linea
 ```
 
-El codigo anterior crea un grafico bastante sencillo que para un analisis rapido puede ser util. Sin embargo, para propositos de una presentacion se puede hacer algo mas presentable.
+El código anterior crea un gráfico bastante sencillo que para un análisis rápido puede ser util. Sin embargo, para propósitos de una presentación se puede hacer algo más presentable.
 
 ```{r g2}
 plot(td,type="l", ylab='Porcentaje', xlab='')
@@ -70,15 +70,17 @@ title(main = "Tasa de Desemplo Nacional \n 2001-2020") # \n genera una segunda l
 grid()                                                 # agrega lineas secundarias
 ```
 
-*Nota 2: De nuevo existen muchas formas de graficar en R, esta es solo una pequeña muestra sobre como mejorar los graficos. La libreria mas recomendanda para graficar es ggplot2.*
+*Nota 2: De nuevo existen muchas formas de graficar en R, esta es solo una pequeña muestra sobre cómo mejorar los graficos. La libreria mas recomendanda para graficar es ggplot2.*
 
-¿Que elementos, componentes o hechos relevantes puede identificar?
+¿Qué elementos, componentes o hechos relevantes puede identificar?
 
-# 2. Estimacion
+# 2. Estimación del Modelo Polinomial
 
-## 2.1. Creacion de variables
+## 2.1. Creación de variables
 
-Una vez identificado un candidato de polinomio de grado 6 mas 3 dummies para enero, octubre y noviembre. Es decir, es necesario crear dichas variables $t$ y sus transformaciones $t^p$ con $p=1,2,3,...$ mas la dummies que ayudan a incorporar estacionalidad, cambios estructurales o comportamiento atipicos. Para ello se requiere ejecutar las siguientes lineas:
+Por un análisis previo se identificó un candidato de polinomio de grado 6. Además, se incluyen 3 dummies para enero, octubre y noviembre y una dummy para el efecto de la Pandemia. 
+
+Es decir, es necesario crear dichas variables $t$ y sus transformaciones $t^p$ con $p=1,2,3,...$ más la dummies que ayudan a incorporar estacionalidad, cambios estructurales o comportamiento atipicos. Para ello se requiere ejecutar las siguientes lineas:
 
 *Nota: Este es un proceso iterativo, el grado del polinomio y las dummies correspondientes son producto de realizar varias estimaciones hasta encontrar el "mejor" modelo*
 
@@ -101,9 +103,9 @@ dnov = as.numeric(months(Fecha) == "November")  # estacionalidad
 d20  = as.numeric(Fecha >="2020-04-01")         # Pandemia 2020
 ```
 
-## 2.2. Estimacion
+## 2.2. Regresión
 
-La regresion queda guardada en R_pol y con la funcion "summary" se obtiene el resultado de dicha regresion es una presentacion muy similar a la de otros paquetes estadisticos.
+La regresion queda guardada en R_pol y con la función "summary" se obtiene el resultado de dicha regresión. La presentación es muy similar a la de otros paquetes estadísticos.
 
 ```{r reg}
 dr     = data.frame(td,t,t2,t3,t4,t5,t6,dene,doct,dnov, d20, row.names = Fecha)
@@ -111,12 +113,37 @@ R_pol = lm(td~., data = dr)
 summary(R_pol)
 ```
 
-Note que el data.frame llamado "dr" esta ubicado en el espacio de Data del Enviroement, y al hacer clic se ve cuales son sus elementos. Ademas, en la funcion "lm" se debe establecer que los datos a utilizar son el grupo que se creo "dr". De ahora en adelante se sugiere seguir utilizando las estructuras de data.frame en la medida que facilitan mucho la programacion.
+Note que el data.frame llamado "dr" esta ubicado en el espacio de Data del Enviroement, y al hacer clic se ve cuales son sus elementos. Además, en la funcion "lm" se debe establecer que los datos a utilizar son el grupo que se creó "dr". De ahora en adelante, se sugiere seguir utilizando las estructuras de data.frame en la medida que facilitan la programación.
 
-¿Cuales son las conclusiones de las pruebas de significancia indivual?
-¿Como se interpretan los coeficientes de las dummies?
+¿Cuáles son las conclusiones de las pruebas de significancia individual?
+¿Cómo se interpretan los coeficientes de las dummies?
 
-## 2.3. Analisis Grafico: Observado vs Estimado
+## 2.3. Supuestos
+
+*Nota 1: Por el momento, se hace el análisis sobre los tres más importantes: No autocorrelación, Homocedasticidad y Normalidad*
+
+*Nota 2: Las pruebas y sus resultados se leen igual que siempre, se escoge un nivel de significancia ($\alpha$) y se compara contra el p-valor*
+
+```{r rsupuestos}
+
+e_hat = R_pol$residuals
+plot(e_hat, type = "l")
+grid()
+
+#No Autocorrelación (Breusch-Godfrey Test)
+library(lmtest)
+bgtest(R_pol, order = 6)
+
+# Normalidad
+library(tseries)
+jarque.bera.test(e_hat)
+
+# Homocedasticidad (Breusch-Pagan Test)
+bptest(R_pol)
+
+```
+
+## 2.4. Análisis Gráfico: Observado vs Estimado
 
 Si bien aun no se han analizado los supuestos, en este punto es conveniente "revisar" cual es la Tasa de Desempleo que esta estimando el modelo versus la Tasa de Desemplo Observada.
 
