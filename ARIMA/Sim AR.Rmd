@@ -26,12 +26,14 @@ Proceso 1: $y_{t}=c+\phi_{1}y_{t-1}+\varepsilon_{t}$; con $c=3$, $y_{1}=100$ y $
 
 ```{r sim}
 
-T = 100       # numero de iteraciones
+# set.seed(123) # fijar simulación
 
-e = rnorm(T)  # error simulado
+T   = 100       # numero de iteraciones
 
-c = 3         # constante
-phi = 0.5     # coeficiente del rezago
+e   = rnorm(T)  # error simulado
+
+c   = 3         # constante
+phi = 0.5       # coeficiente del rezago
 
 # Construir y
 
@@ -69,12 +71,12 @@ Proceso 2: $y_{t}=c+\phi_{1}y_{t-1}+\varepsilon_{t}$; con $c=3$, $y_{1}=100$ y $
 
 ```{r sim_2}
 
-T = 100       # numero de iteraciones
+T   = 100       # numero de iteraciones
 
-e = rnorm(T)  # error simulado
+e   = rnorm(T)  # error simulado
 
-c = 3         # constante
-phi = -0.5     # coeficiente del rezago
+c   = 3         # constante
+phi = -0.5      # coeficiente del rezago
 
 # Construir y
 
@@ -116,12 +118,12 @@ Proceso 3: $y_{t}=c+\phi_{1}y_{t-1}+\varepsilon_{t}$; con $c=3$, $y_{1}=100$ y $
 
 ```{r sim_3}
 
-T = 100        # numero de iteraciones
+T   = 100       # numero de iteraciones
 
-e = rnorm(T)   # error simulado
+e   = rnorm(T)  # error simulado
 
-c = 3          # constante
-phi = 1.01     # coeficiente del rezago
+c   = 3         # constante
+phi = 1.01      # coeficiente del rezago
 
 # Construir y
 
@@ -159,11 +161,11 @@ Proceso 4: $y_{t}=c+\phi_{1}y_{t-1}+\varepsilon_{t}$; con $c=3$, $y_{1}=100$ y $
 
 ```{r sim_4}
 
-T = 100       # numero de iteraciones
+T   = 100       # numero de iteraciones
 
-e = rnorm(T)  # error simulado
+e   = rnorm(T)  # error simulado
 
-c = 3         # constante
+c   = 3         # constante
 phi = -1.01     # coeficiente del rezago
 
 # Construir y
@@ -207,12 +209,12 @@ Proceso 5: $y_{t}=c+\phi_{1}y_{t-1}+\varepsilon_{t}$; con $c=3$, $y_{1}=100$ y $
 
 ```{r sim_5}
 
-T = 100       # numero de iteraciones
+T   = 100       # numero de iteraciones
 
-e = rnorm(T)  # error simulado
+e   = rnorm(T)  # error simulado
 
-c = 3         # constante
-phi = 1.0     # coeficiente del rezago
+c   = 3         # constante
+phi = 1.0       # coeficiente del rezago
 
 # Construir y
 
@@ -250,12 +252,12 @@ Proceso 6: $y_{t}=c+\phi_{1}y_{t-1}+\varepsilon_{t}$; con $c=3$, $y_{1}=100$ y $
 
 ```{r sim_5}
 
-T = 100       # numero de iteraciones
+T   = 100       # numero de iteraciones
 
-e = rnorm(T)  # error simulado
+e   = rnorm(T)  # error simulado
 
-c = 3         # constante
-phi = -1.0     # coeficiente del rezago
+c   = 3         # constante
+phi = -1.0      # coeficiente del rezago
 
 # Construir y
 
