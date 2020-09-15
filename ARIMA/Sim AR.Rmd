@@ -9,13 +9,20 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Simulación de un proceso AR(1)
+## Borrar Environment
 
-La idea es simular dos procesos AR(1):
+```{r be}
+rm(list = ls())
+```
+
+
+# 1. Simulación de un proceso AR(1)
+
+El porpósito de este código es "mirar" o analizar las características básicas de un proceso AR(1) ideal, donde todo "da bien".
+
+Para tal fin, se simulan dos procesos AR(1):
 
 Proceso 1: $y_{t}=c+\phi_{1}y_{t-1}+\varepsilon_{t}$; con $c=3$, $y_{1}=100$ y $\phi=0.5$.
-
-Proceso 2: $y_{t}=c+\phi_{1}y_{t-1}+\varepsilon_{t}$; con $c=3$, $y_{1}=100$ y $\phi=-0.5$.
 
 ```{r sim}
 
@@ -37,9 +44,25 @@ for (t in 2:T) {
   
 }
 
-plot(y1, type = "l")
+# Código para configurar gráfico
+t = seq(1,T)
+a1 = data.frame(y1, t)
 
 ```
+
+```{r g1}
+# Gráfico con ggplot2 + LaTEX
+library(ggplot2)  
+library(latex2exp)
+
+g1 = ggplot(data = a1, aes(x=t,y=y1))
+g1 + geom_line() + 
+  ylab(TeX("$y_{t}$")) +
+  xlab(TeX("Time"))
+
+```
+
+Proceso 2: $y_{t}=c+\phi_{1}y_{t-1}+\varepsilon_{t}$; con $c=3$, $y_{1}=100$ y $\phi=-0.5$.
 
 ```{r sim_2}
 
