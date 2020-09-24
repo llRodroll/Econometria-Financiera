@@ -22,91 +22,71 @@ El porpósito es "mirar" o analizar las características básicas de un proceso 
 
 Para tal fin, se simulan dos procesos AR(1):
 
-Proceso 1: $y_{t}=c+\phi_{1}y_{t-1}+\varepsilon_{t}$; con $c=3$, $y_{1}=100$ y $\phi=0.5$.
+Proceso 1: $y_{t}=c+\phi_{1}y_{t-1}+\varepsilon_{t}$; con $c=3$, $y_{1}=7$ y $\phi_{1}=0.5$.
 
 ```{r sim}
-
-# set.seed(123) # fijar simulación
-
+set.seed(123) # fijar simulación
 T   = 100       # numero de iteraciones
-
-e   = rnorm(T)  # error simulado
-
+e   = rnorm(T)  # error simulado: e~N(0,1)
 c   = 3         # constante
 phi = 0.5       # coeficiente del rezago
 
 # Construir y
-
 y1 = matrix(data = NA, nrow = T, ncol = 1)
 y1[1] = 7
-
 for (t in 2:T) {
   
   y1[t] = c + phi*y1[(t-1)] + e[t]
   
 }
-
 # Código para configurar gráfico
 t = seq(1,T)
 a1 = data.frame(y1, t)
-
 ```
 
 ```{r g1}
 # Gráfico con ggplot2 + LaTEX
 library(ggplot2)  
 library(latex2exp)
-
 g1 = ggplot(data = a1, aes(x=t,y=y1))
 g1 + 
   geom_line(color = "blue") + 
   ylab(TeX("$y_{t}$")) +
-  xlab(TeX("Time")) + 
+  xlab(TeX("Tiempo")) + 
   ggtitle(TeX("Proceso 1: AR(1) $0<\\phi<1$")) + theme(plot.title = element_text(hjust = 0.5))
-
 ```
 
 
-Proceso 2: $y_{t}=c+\phi_{1}y_{t-1}+\varepsilon_{t}$; con $c=3$, $y_{1}=100$ y $\phi=-0.5$.
+Proceso 2: $y_{t}=c+\phi_{1}y_{t-1}+\varepsilon_{t}$; con $c=3$, $y_{1}=7$ y $\phi=-0.5$.
 
 ```{r sim_2}
-
 T   = 100       # numero de iteraciones
-
 e   = rnorm(T)  # error simulado
-
 c   = 3         # constante
 phi = -0.5      # coeficiente del rezago
-
 # Construir y
-
 y2 = matrix(data = NA, nrow = T, ncol = 1)
 y2[1] = 7
-
 for (t in 2:T) {
   
   y2[t] = c + phi*y2[(t-1)] + e[t]
   
 }
-
 # Código para configurar gráfico
 t = seq(1,T)
 a2 = data.frame(y2, t)
-
 ```
 
 ```{r g2}
 # Gráfico con ggplot2 + LaTEX
 library(ggplot2)  
 library(latex2exp)
-
 g2 = ggplot(data = a2, aes(x=t,y=y2))
 g2 + 
   geom_line(color = "blue") + 
   ylab(TeX("$y_{t}$")) +
   xlab(TeX("Time")) + 
   ggtitle(TeX("Proceso 2: AR(1) $-1<\\phi<0$")) + theme(plot.title = element_text(hjust = 0.5))
-
 ```
 
 
@@ -114,89 +94,69 @@ g2 +
 
 El porpósito es "mirar" o analizar las características básicas de un proceso AR(1) **no** estacionario.
 
-Proceso 3: $y_{t}=c+\phi_{1}y_{t-1}+\varepsilon_{t}$; con $c=3$, $y_{1}=100$ y $\phi=1.01$. 
+Proceso 3: $y_{t}=c+\phi_{1}y_{t-1}+\varepsilon_{t}$; con $c=3$, $y_{1}=7$ y $\phi=1.01$. 
 
 ```{r sim_3}
-
 T   = 100       # numero de iteraciones
-
 e   = rnorm(T)  # error simulado
-
 c   = 3         # constante
 phi = 1.01      # coeficiente del rezago
-
 # Construir y
-
 y3 = matrix(data = NA, nrow = T, ncol = 1)
 y3[1] = 7
-
 for (t in 2:T) {
   
   y3[t] = c + phi*y3[(t-1)] + e[t]
   
 }
-
 # Código para configurar gráfico
 t = seq(1,T)
 a3 = data.frame(y3, t)
-
 ```
 
 ```{r g3}
 # Gráfico con ggplot2 + LaTEX
 library(ggplot2)  
 library(latex2exp)
-
 g3 = ggplot(data = a3, aes(x=t,y=y3))
 g3 + 
   geom_line(color = "blue") + 
   ylab(TeX("$y_{t}$")) +
   xlab(TeX("Time")) + 
   ggtitle(TeX("Proceso 3: AR(1) $\\phi>1$")) + theme(plot.title = element_text(hjust = 0.5))
-
 ```
 
 
-Proceso 4: $y_{t}=c+\phi_{1}y_{t-1}+\varepsilon_{t}$; con $c=3$, $y_{1}=100$ y $\phi=-1.01$. 
+Proceso 4: $y_{t}=c+\phi_{1}y_{t-1}+\varepsilon_{t}$; con $c=3$, $y_{1}=7$ y $\phi=-1.01$. 
 
 ```{r sim_4}
-
 T   = 100       # numero de iteraciones
-
 e   = rnorm(T)  # error simulado
-
 c   = 3         # constante
 phi = -1.01     # coeficiente del rezago
-
 # Construir y
-
 y4 = matrix(data = NA, nrow = T, ncol = 1)
 y4[1] = 7
-
 for (t in 2:T) {
   
   y4[t] = c + phi*y4[(t-1)] + e[t]
   
 }
-
 # Código para configurar gráfico
 t = seq(1,T)
 a4 = data.frame(y4, t)
-
 ```
 
 ```{r g4}
 # Gráfico con ggplot2 + LaTEX
 library(ggplot2)  
 library(latex2exp)
-
 g4 = ggplot(data = a4, aes(x=t,y=y4))
 g4 + 
   geom_line(color = "blue") + 
   ylab(TeX("$y_{t}$")) +
   xlab(TeX("Time")) + 
   ggtitle(TeX("Proceso 4: AR(1) $\\phi < -1$")) + theme(plot.title = element_text(hjust = 0.5)) 
-
 ```
 
 
@@ -205,87 +165,67 @@ g4 +
 El porpósito es "mirar" o analizar las características básicas de un proceso AR(1) cuando $\left| \phi \right|=1$, es decir, un paseo o caminata aleatoria.
 
 
-Proceso 5: $y_{t}=c+\phi_{1}y_{t-1}+\varepsilon_{t}$; con $c=3$, $y_{1}=100$ y $\phi=1$. 
+Proceso 5: $y_{t}=c+\phi_{1}y_{t-1}+\varepsilon_{t}$; con $c=3$, $y_{1}=7$ y $\phi=1$. 
 
 ```{r sim_5}
-
 T   = 100       # numero de iteraciones
-
 e   = rnorm(T)  # error simulado
-
 c   = 3         # constante
 phi = 1.0       # coeficiente del rezago
-
 # Construir y
-
 y5 = matrix(data = NA, nrow = T, ncol = 1)
 y5[1] = 7
-
 for (t in 2:T) {
   
   y5[t] = c + phi*y5[(t-1)] + e[t]
   
 }
-
 # Código para configurar gráfico
 t = seq(1,T)
 a5 = data.frame(y5, t)
-
 ```
 
 ```{r g5}
 # Gráfico con ggplot2 + LaTEX
 library(ggplot2)  
 library(latex2exp)
-
 g5 = ggplot(data = a5, aes(x=t,y=y5))
 g5 + 
   geom_line(color = "blue") + 
   ylab(TeX("$y_{t}$")) +
   xlab(TeX("Time")) + 
   ggtitle(TeX("Proceso 5: RW $\\phi = 1$")) + theme(plot.title = element_text(hjust = 0.5)) 
-
 ```
 
 
-Proceso 6: $y_{t}=c+\phi_{1}y_{t-1}+\varepsilon_{t}$; con $c=3$, $y_{1}=100$ y $\phi=-1$. 
+Proceso 6: $y_{t}=c+\phi_{1}y_{t-1}+\varepsilon_{t}$; con $c=3$, $y_{1}=7$ y $\phi=-1$. 
 
-```{r sim_5}
-
+```{r sim_6}
 T   = 100       # numero de iteraciones
-
 e   = rnorm(T)  # error simulado
-
 c   = 3         # constante
 phi = -1.0      # coeficiente del rezago
-
 # Construir y
-
 y6 = matrix(data = NA, nrow = T, ncol = 1)
 y6[1] = 7
-
 for (t in 2:T) {
   
   y6[t] = c + phi*y6[(t-1)] + e[t]
   
 }
-
 # Código para configurar gráfico
 t = seq(1,T)
 a6 = data.frame(y6, t)
-
 ```
 
 ```{r g6}
 # Gráfico con ggplot2 + LaTEX
 library(ggplot2)  
 library(latex2exp)
-
 g6 = ggplot(data = a6, aes(x=t,y=y6))
 g6 + 
   geom_line(color = "blue") + 
   ylab(TeX("$y_{t}$")) +
   xlab(TeX("Time")) + 
   ggtitle(TeX("Proceso 6: RW $\\phi = -1$")) + theme(plot.title = element_text(hjust = 0.5)) 
-
 ```
