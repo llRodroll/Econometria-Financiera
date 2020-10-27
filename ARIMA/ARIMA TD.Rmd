@@ -16,3 +16,23 @@ Por costumbre y como práctica de programacion, se sugiere siempre a borrar al "
 ```{r be}
 rm(list=ls())
 ```
+
+# 1. Base de datos - Variable
+
+La variable a utilizar es la Tasa de Desempleo Nacional (sin desestacionalizar) de Colombia, calculada y publicada por el Departamento Administrativo Nacional de Estadisticas (DANE). La variable esta en porcentaje, para un periodo desde enero de 2001 hasta agosto de 2020 (236 observaciones) con frecuencia mensual. 
+
+## 1.1. Importar Base
+
+```{r importar}
+library(readxl)
+desempleo <- read_excel("C:/Users/Rodro/Documents/R/Econometria-Financiera/ARIMA/BD_TD.xlsx")
+```
+
+## 1.2. Definición de variables
+
+```{r def}
+td = desempleo$TD
+td = ts(td, start = c(2001,1), end = c(2020,8), frequency = 12)
+Fecha  = as.Date(desempleo$Fecha, format="%Y-%m")
+```
+
