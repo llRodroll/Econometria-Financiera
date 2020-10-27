@@ -105,6 +105,68 @@ g1 +
 par(mfrow=c(2,1))
 acf(diff(td), main = "Correlograma de la primera diferencia de TD" )
 pacf(diff(td), main = '')
-asdasdsa
-asda
+```
+# 4. Estimación
+
+## 4.1. Creación de variables
+
+```{r dx}
+# Dummies
+
+dene = as.numeric(months(Fecha) == "January")   # estacionalidad
+doct = as.numeric(months(Fecha) == "October")   # estacionalidad
+dnov = as.numeric(months(Fecha) == "November")  # estacionalidad
+d20  = as.numeric(Fecha >="2020-04-01" & Fecha <= "2020-07-01")         # Pandemia 2020
+```
+
+## 4.2. ARIMA
+
+```{r ar, message = FALSE}
+library(lmtest) # prueba de significancia
+
+M1 = arima(td,order = c(1,1,1),
+           xreg = cbind(dene,doct,dnov,d20))  # ARIMA(p,d,q)
+coeftest(M1)
+
+```
+
+## 4.3 Obs vs Estimado
+
+```{r oe, message = FALSE}
+
+tde = fitted(M1)
+
+tmp = cbind(td,tde)                        # variable que agrupa Observado y Estimado
+matplot(tmp,type="l",
+        lwd = c(2,2),
+        col = c("black","red"),
+        ylab='Porcentaje', xlab='')
+title(main = "Tasa de Desemplo Nacional \n 2001-2020")     # \n genera una segunda linea en el titulo
+legend(x = "topleft", legend = c("Obs.","Est."),
+       lty = c(1,2), lwd = c(2,2), col = c("black","red")) # agrega leyenda al grafico
+grid()                                                     # agrega lineas secundarias
+
+
+```
+
+# 5. Comprobar supuestos
+
+```{r supuestos}
+
+e_hat = M1$residuals
+plot(e_hat)
+
+#Autocorrelacion
+par(mfrow=c(2,1))
+acf(e_hat, main = "Correlograma de los Residuos" )
+pacf(e_hat, main = '')
+
+# normalidad
+library(tseries)
+jarque.bera.test(e_hat)
+
+# homocedasticidad
+
+arch.test(M1)
+
 ```
