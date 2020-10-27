@@ -105,4 +105,6 @@ g1 +
 par(mfrow=c(2,1))
 acf(diff(td), main = "Correlograma de la primera diferencia de TD" )
 pacf(diff(td), main = '')
+asdasdsa
+asda
 ```
