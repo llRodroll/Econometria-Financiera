@@ -36,3 +36,65 @@ td = ts(td, start = c(2001,1), end = c(2020,8), frequency = 12)
 Fecha  = as.Date(desempleo$Fecha, format="%Y-%m")
 ```
 
+## 1.3. Análisis gráfico
+
+```{r g1, message=FALSE, echo=FALSE}
+# Gráfico con ggplot2 + LaTEX
+library(ggplot2)  
+library(latex2exp)
+a1 = data.frame(td, Fecha)
+g1 = ggplot(data = a1, aes(x=Fecha,y=td))
+g1 + 
+  geom_line(color = "blue") + 
+  ylab(TeX("Porcentaje")) +
+  xlab(TeX("Fecha")) + 
+  ggtitle(TeX("Tasa de Desemplo Nacional 2001-2020")) + theme(plot.title = element_text(hjust = 0.5))
+```
+
+# 2. Prueba ADF
+
+## 2.1. Niveles ($y_{t}$)
+
+```{r n_adf, message=FALSE}
+library(aTSA)
+n_adf = adf.test(td)
+```
+
+**Conclusion**
+
+*No* es posible rechazar la Ho de que la la TD tiene raices unitarias.
+
+La serie TD *NO* es estacionaria en niveles.
+
+## 2.2. Primera Diferencia ($\triangle y_{t}$)
+
+```{r pd_adf, message=FALSE}
+pd_td = diff(td) # primera diferencia de TD
+pd_adf = adf.test(pd_td)
+```
+
+**Conclusion**
+
+Se rechaza la Ho de que la primera diferencia de la TD, sin intercepto ni tendencia, tiene raices unitarias.
+
+La serie TD es estacionaria en primera diferencia, sin intercepto ni tendencia.
+
+I(d): d=1. En términos concretos I(1). La serie TD es I(1).
+
+# 3. Identificación
+
+## 3.1. Análisis gráfico
+
+```{r g2, message=FALSE, echo=FALSE}
+# Gráfico con ggplot2 + LaTEX
+library(ggplot2)  
+library(latex2exp)
+Fecha2 = Fecha[2:236]
+a2 = data.frame(pd_td, Fecha2)
+g1 = ggplot(data = a2, aes(x=Fecha2,y=pd_td))
+g1 + 
+  geom_line(color = "blue") + 
+  ylab(TeX("Porcentaje")) +
+  xlab(TeX("Fecha")) + 
+  ggtitle(TeX("Tasa de Desemplo Nacional 2001-2020 ($\\Delta y_{t}$)")) + theme(plot.title = element_text(hjust = 0.5))
+```
