@@ -98,3 +98,11 @@ g1 +
   xlab(TeX("Fecha")) + 
   ggtitle(TeX("Tasa de Desemplo Nacional 2001-2020 ($\\Delta y_{t}$)")) + theme(plot.title = element_text(hjust = 0.5))
 ```
+
+## 3.2. Correlograma
+
+```{r corr, message=FALSE}
+par(mfrow=c(2,1))
+acf(diff(td), main = "Correlograma de la primera diferencia de TD" )
+pacf(diff(td), main = '')
+```
