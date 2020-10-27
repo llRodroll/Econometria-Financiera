@@ -1,0 +1,18 @@
+---
+title: "ARIMA TD"
+author: "Rodrigo Velez"
+date: "27/10/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Borrar Enviroment
+
+Por costumbre y como práctica de programacion, se sugiere siempre a borrar al "Enviorment", el cual es el espacio donde se almacenan los datos a importar asi como todos los objetos creados en el código.
+
+```{r be}
+rm(list=ls())
+```
