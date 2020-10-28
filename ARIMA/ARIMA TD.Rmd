@@ -117,6 +117,7 @@ dene = as.numeric(months(Fecha) == "January")   # estacionalidad
 doct = as.numeric(months(Fecha) == "October")   # estacionalidad
 dnov = as.numeric(months(Fecha) == "November")  # estacionalidad
 d20  = as.numeric(Fecha >="2020-04-01" & Fecha <= "2020-07-01")         # Pandemia 2020
+d1   = as.numeric(Fecha == "2020-08-01")
 ```
 
 ## 4.2. ARIMA
@@ -125,7 +126,7 @@ d20  = as.numeric(Fecha >="2020-04-01" & Fecha <= "2020-07-01")         # Pandem
 library(lmtest) # prueba de significancia
 
 M1 = arima(td,order = c(1,1,1),
-           xreg = cbind(dene,doct,dnov,d20))  # ARIMA(p,d,q)
+           xreg = cbind(dene,doct,dnov,d20,d1))  # ARIMA(p,d,q)
 coeftest(M1)
 
 ```
@@ -136,15 +137,13 @@ coeftest(M1)
 
 tde = fitted(M1)
 
-tmp = cbind(td,tde)                        # variable que agrupa Observado y Estimado
-matplot(tmp,type="l",
-        lwd = c(2,2),
-        col = c("black","red"),
-        ylab='Porcentaje', xlab='')
-title(main = "Tasa de Desemplo Nacional \n 2001-2020")     # \n genera una segunda linea en el titulo
-legend(x = "topleft", legend = c("Obs.","Est."),
-       lty = c(1,2), lwd = c(2,2), col = c("black","red")) # agrega leyenda al grafico
-grid()                                                     # agrega lineas secundarias
+g3 = ggplot() 
+g3 + 
+  geom_line(aes(x=Fecha,y=td),color='blue', size = 1) +
+  geom_line(aes(x=Fecha,y=tde),color='red', size = 1, linetype = "dashed") + 
+  ylab(TeX("Porcentaje")) +
+  xlab(TeX("Fecha")) + 
+  ggtitle(TeX("Tasa de Desemplo Nacional 2001-2020")) + theme(plot.title = element_text(hjust = 0.5))
 
 
 ```
