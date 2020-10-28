@@ -135,13 +135,13 @@ coeftest(M1)
 
 ```{r oe, message = FALSE}
 
-tde = fitted(M1)
-dfg = data.frame(td,tde,Fecha)
+td_p = td - M1$residuals
+tmp2 = data.frame(td,td_p,Fecha)
 
-g3 = ggplot(dfg) 
+g3 = ggplot(tmp2) 
 g3 + 
   geom_line(aes(x=Fecha,y=td),color='blue', size = 1) +
-  geom_line(aes(x=Fecha,y=tde),color='red', size = 1, linetype = "dashed") + 
+  geom_line(aes(x=Fecha,y=td_p),color='red', size = 1, linetype = "dashed") + 
   ylab(TeX("Porcentaje")) +
   xlab(TeX("Fecha")) + 
   ggtitle(TeX("Tasa de Desemplo Nacional 2001-2020")) + theme(plot.title = element_text(hjust = 0.5))
