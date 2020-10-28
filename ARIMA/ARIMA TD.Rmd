@@ -57,7 +57,7 @@ g1 +
 
 ```{r n_adf, message=FALSE}
 library(aTSA)
-n_adf = adf.test(td)
+n_adf = aTSA::adf.test(td)
 ```
 
 **Conclusion**
@@ -70,7 +70,7 @@ La serie TD *NO* es estacionaria en niveles.
 
 ```{r pd_adf, message=FALSE}
 pd_td = diff(td) # primera diferencia de TD
-pd_adf = adf.test(pd_td)
+pd_adf = aTSA::adf.test(pd_td)
 ```
 
 **Conclusion**
@@ -136,8 +136,9 @@ coeftest(M1)
 ```{r oe, message = FALSE}
 
 tde = fitted(M1)
+dfg = data.frame(td,tde,Fecha)
 
-g3 = ggplot() 
+g3 = ggplot(dfg) 
 g3 + 
   geom_line(aes(x=Fecha,y=td),color='blue', size = 1) +
   geom_line(aes(x=Fecha,y=tde),color='red', size = 1, linetype = "dashed") + 
