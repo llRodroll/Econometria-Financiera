@@ -118,6 +118,8 @@ doct = as.numeric(months(Fecha) == "October")   # estacionalidad
 dnov = as.numeric(months(Fecha) == "November")  # estacionalidad
 d20  = as.numeric(Fecha >="2020-04-01" & Fecha <= "2020-07-01")         # Pandemia 2020
 d1   = as.numeric(Fecha == "2020-08-01")
+d2   = as.numeric(Fecha == "2003-03-01" | Fecha == "2003-12-01" | 
+                  Fecha == "2005-01-01")
 ```
 
 ## 4.2. ARIMA
@@ -125,15 +127,22 @@ d1   = as.numeric(Fecha == "2020-08-01")
 ```{r ar, message = FALSE}
 library(lmtest) # prueba de significancia
 
-M1 = arima(td,order = c(1,1,1),
-           xreg = cbind(dene,doct,dnov,d20,d1))  # ARIMA(p,d,q)
+#M1 = arima(td,order = c(1,1,1),
+#           xreg = cbind(dene,doct,dnov,d20,d1))  # ARIMA(p,d,q)
+#coeftest(M1)
+
+M1 = arima(td, order = c(3,1,12),
+           xreg = cbind(dene,doct,dnov,d20,d1,d2),
+           fixed = c(NA,NA,NA,
+                     0,0,0,0,0,0,0,0,0,0,0,NA,
+                     NA,NA,NA,NA,NA,NA))  
 coeftest(M1)
 
 ```
 
-## 4.3 Obs vs Estimado
+## 4.3 Observado vs Estimado
 
-```{r oe, message = FALSE}
+```{r oe, message = FALSE,echo=FALSE}
 
 td_p = td - M1$residuals
 tmp2 = data.frame(td,td_p,Fecha)
@@ -151,7 +160,7 @@ g3 +
 
 # 5. Comprobar supuestos
 
-```{r supuestos}
+```{r supuestos, message=FALSE}
 
 e_hat = M1$residuals
 plot(e_hat)
