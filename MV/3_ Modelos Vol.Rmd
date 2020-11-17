@@ -1,0 +1,151 @@
+---
+title: "3_Modelos de Volatilidad"
+author: "Rodrigo Velez"
+date: "06/05/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Importar Base de datos
+
+```{r imp}
+
+# borrar el enviroment 
+rm(list=ls())
+
+#importar
+library(readxl)
+colcap = read_excel("D:/Calculos 2020/3_COLCAP2.xlsx")
+
+```
+
+## Arreglar variables
+
+```{r var}
+
+Fecha  = as.Date(colcap$Fecha, format="%Y-%m-%d")
+
+# Precio de cierre del COLCAP
+
+pr = as.ts(colcap$COLCAP)
+
+plot(Fecha,pr, main = "Evolución COLCAP", type = "l", ylab = '', xlab = '')
+grid()
+
+# Retorno diario logarítmico
+
+r = diff(log(pr))*100
+
+plot(Fecha[2:end(Fecha)],r, main = "Retorno COLCAP", 
+     type = "l", ylab = 'Porcentaje', xlab = '', col = "steelblue")
+grid()
+abline(0,0)
+
+```
+
+## 3.1. Volatilidad Historica
+
+```{r vh}
+
+# Varianza de los retornos - Ojo Unidades al cuadrado
+s2 = var(r)   
+
+# Desviación Estandar o Volatilidad Histórica - mismas unidades de r
+s = sd(r)
+
+sv = rep(s,length(r)) # solo este vector para temas gráficos
+
+```
+
+## 3.2. Volatilidad EWMA - Risk Metrics
+
+```{r vrm}
+
+lambda = 0.94
+ewma = matrix(data = NA, nrow = length(r), ncol = 1)
+ewma[1] = 0
+
+for (t in 2:length(r)) {
+  
+  ewma[t] = lambda*ewma[(t-1)] + (1-lambda)*r[(t-1)]^2
+  
+}
+
+ewma = as.ts(sqrt(ewma))
+
+vol = data.frame(sv,ewma,row.names = Fecha[2:end(Fecha)])
+
+matplot(vol, type = "l", main = "Volatilidad Diaria Retornos del COLCAP", ylab = "Porcentaje")
+legend(100,5,legend = c("Histórica","EWMA"))
+
+```
+
+## 3.4. Modelos GARCH
+
+```{r g11}
+
+library(rugarch)
+
+# Estimación de una ARIMA(1,0,1)-GARCH(1,1)
+spec1 = ugarchspec()
+fit1 = ugarchfit(spec = spec1, data = r)
+show(fit1)
+plot(fit1, which = 'all')
+```
+
+```{r gpq}
+
+# Estimación de una ARIMA(p,d,q)-GARCH(P,Q)
+p = 2; d = 0; q = 1;
+P = 1; Q = 2
+spec2 = ugarchspec(mean.model = list(armaOrder = c(p,q), arfima = d),
+                   variance.model = list(model = "sGARCH",garchOrder = c(P,Q)))
+fit2 = ugarchfit(spec = spec2, data = r)
+show(fit2)
+plot(fit2, which = 'all')
+```
+
+##3.5. Extensiones del modelo GARCH
+### 3.5.1. GJR o TGARCH
+
+```{r tg}
+
+# Estimación de una ARIMA(p,d,q)-TGARCH(P,Q)
+p = 1; d = 0; q = 1;
+P = 1; Q = 1
+spec3 = ugarchspec(mean.model = list(armaOrder = c(p,q), arfima = d),
+                   variance.model = list(model = "gjrGARCH",garchOrder = c(P,Q)))
+fit3 = ugarchfit(spec = spec3, data = r)
+show(fit3)
+plot(fit3, which = 'all')
+```
+
+###3.5.2.
+```{r eg}
+
+# Estimación de una ARIMA(p,d,q)-TGARCH(P,Q)
+p = 1; d = 0; q = 1;
+P = 1; Q = 1
+spec4 = ugarchspec(mean.model = list(armaOrder = c(p,q), arfima = d),
+                   variance.model = list(model = "eGARCH",garchOrder = c(P,Q)))
+fit4 = ugarchfit(spec = spec4, data = r)
+show(fit4)
+plot(fit4, which = 'all')
+```
+
+###3.5.3. GARCH-M
+
+```{r gm}
+
+# Estimación de una ARIMA(p,d,q)-TGARCH(P,Q)
+p = 1; d = 0; q = 1;
+P = 1; Q = 1
+spec5 = ugarchspec(mean.model = list(armaOrder = c(p,q), arfima = d, archm = TRUE, archpow = 1),
+                   variance.model = list(model = "sGARCH",garchOrder = c(P,Q))) # archpow = 1 incluye la desviación estandar
+fit5 = ugarchfit(spec = spec5, data = r)
+show(fit5)
+plot(fit5, which = 'all')
+```
