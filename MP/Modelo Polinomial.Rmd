@@ -48,7 +48,7 @@ desempleo <- read_excel("C:/Users/Rodro/Documents/R/Econometria-Financiera/MP/BD
 
 ```{r def}
 td = desempleo$TD
-td = ts(td, start = c(2001,1), end = c(2020,6), frequency = 12)
+td = ts(td, start = c(2001,1), end = c(2020,12), frequency = 12)
 Fecha  = as.Date(desempleo$Fecha, format="%Y-%m")
 ```
 
@@ -87,8 +87,8 @@ Es decir, es necesario crear dichas variables $t$ y sus transformaciones $t^p$ c
 ```{r dx}
 # Crear la variable "t"
 
-N  = length(td)  
-t  = seq(1,N)
+T  = length(td)  
+t  = seq(1,T)
 t2 = t^2
 t3 = t^3
 t4 = t^4
@@ -100,7 +100,11 @@ t6 = t^6
 dene = as.numeric(months(Fecha) == "January")   # estacionalidad
 doct = as.numeric(months(Fecha) == "October")   # estacionalidad
 dnov = as.numeric(months(Fecha) == "November")  # estacionalidad
-d20  = as.numeric(Fecha >="2020-04-01")         # Pandemia 2020
+d20_1  = as.numeric(Fecha >="2020-04-01" & Fecha <= "2020-05-01")         # Pandemia 2020
+d20_2  = as.numeric(Fecha >="2020-06-01" & Fecha <= "2020-07-01")
+d20_3  = as.numeric(Fecha >="2020-08-01" & Fecha <= "2020-10-01")
+d20_4  = as.numeric(Fecha >= "2020-11-01")
+
 ```
 
 ## 2.2. Regresión
@@ -108,7 +112,7 @@ d20  = as.numeric(Fecha >="2020-04-01")         # Pandemia 2020
 La regresion queda guardada en R_pol y con la función "summary" se obtiene el resultado de dicha regresión. La presentación es muy similar a la de otros paquetes estadísticos.
 
 ```{r reg}
-dr     = data.frame(td,t,t2,t3,t4,t5,t6,dene,doct,dnov, d20, row.names = Fecha)
+dr     = data.frame(td,t,t2,t3,t4,t5,t6,dene,doct,dnov,d20_1,d20_2,d20_3,d20_4, row.names = Fecha)
 R_pol = lm(td~., data = dr)
 summary(R_pol)
 ```
@@ -127,6 +131,7 @@ Note que el data.frame llamado "dr" esta ubicado en el espacio de Data del Envir
 ```{r rsupuestos}
 
 e_hat = R_pol$residuals
+#e_hat
 plot(e_hat, type = "l")
 grid()
 
@@ -139,7 +144,7 @@ library(tseries)
 jarque.bera.test(e_hat)
 
 # Homocedasticidad (Breusch-Pagan Test)
-bptest(R_pol)
+bptest(R_pol, )
 
 ```
 
