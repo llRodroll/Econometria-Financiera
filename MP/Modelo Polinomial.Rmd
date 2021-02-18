@@ -29,7 +29,7 @@ rm(list=ls())
 
 *Nota: En esta sección tenga en cuenta que se debe describir como mínimo: Nombre de la Variable, Fuente de información, Unidades, Periodo de análisis, Frecuencia o Periodicidad*
 
-La variable a utilizar es la Tasa de Desempleo Nacional (sin desestacionalizar) de Colombia, calculada y publicada por el Departamento Administrativo Nacional de Estadisticas (DANE). La variable esta en porcentaje, para un periodo desde enero de 2001 hasta mayo de 2020 (233 observaciones) con frecuencia mensual. 
+La variable a utilizar es la Tasa de Desempleo Nacional (sin desestacionalizar) de Colombia, calculada y publicada por el Departamento Administrativo Nacional de Estadisticas (DANE). La variable esta en porcentaje, para un periodo desde enero de 2001 hasta diciembre de 2020 (240 observaciones) con frecuencia mensual. 
 
 ## 1.1. Importar Base
 
