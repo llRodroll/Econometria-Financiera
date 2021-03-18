@@ -251,7 +251,7 @@ pred2
 
 # 4.3. Gráfico
 
-```{r g4}
+```{r g4, echo=FALSE}
 
 # Espacio para el gráfico
 
