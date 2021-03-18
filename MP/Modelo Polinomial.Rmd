@@ -25,117 +25,98 @@ Por costumbre y como práctica de programacion, se sugiere siempre a borrar al "
 rm(list=ls())
 ```
 
-# 1. Base de datos - Variable
+# 1. Base de Datos - Variable
 
-*Nota: En esta sección tenga en cuenta que se debe describir como mínimo: Nombre de la Variable, Fuente de información, Unidades, Periodo de análisis, Frecuencia o Periodicidad*
+*Nota 1: Nombre de la variable, Fuente de información, Unidades, Periodo de análisis, Frecuencia o periodicidad*
 
-La variable a utilizar es la Tasa de Desempleo Nacional (sin desestacionalizar) de Colombia, calculada y publicada por el Departamento Administrativo Nacional de Estadisticas (DANE). La variable esta en porcentaje, para un periodo desde enero de 2001 hasta diciembre de 2020 (240 observaciones) con frecuencia mensual. 
+La variable a utilizar es la Tasa de Desempleo (sin desestacionalizar) de Colombia, calculada y publicada por el Departamento Administrativo Nacional de Estadísticas (DANE). La variable está en porcentaje, para un periodo desde enero de 2001 hasta diciembre de 2020 (240 observaciones) con una frecuencia mensual.
 
 ## 1.1. Importar Base
 
-*Nota 1: Es posible importar bases de datos en diferentes formatos, en este caso se utiliza el formato .xlsx de excel. Es necesario instalar la libreria readxl*
-
 ```{r importar}
 library(readxl)
-desempleo <- read_excel("C:/Users/Rodro/Documents/R/Econometria-Financiera/MP/BD_TD.xlsx")
+desempleo = read_excel("C:/Users/Rodro/Downloads/TD.xlsx", sheet = "Hoja1")
 ```
 
-*Nota 2: La dirección de archivo se debe poner con / en vez de backslash, y se finaliza con el nombre del archivo*
-
-## 1.2. Definición de variables
-
-*Nota 1: Para garantizar que las funciones y librerias a usar funcionen adecuadamente se debe definir las variable a trabajar como serie de tiempo y la fecha en formato de fecha de R*
+## 1.2. Definición de varibales
 
 ```{r def}
-td = desempleo$TD
-td = ts(td, start = c(2001,1), end = c(2020,12), frequency = 12)
-Fecha  = as.Date(desempleo$Fecha, format="%Y-%m")
+td    = ts(desempleo$TD, start = c(2001,1), end = c(2020,12), frequency = 12)
+Fecha = as.Date(desempleo$Fecha, format = "%Y-%m") 
 ```
-
-*Nota 2: Existen mil formas de definir las variables, utilizando diferentes paquetes. El código anterior es solo una de ellas*
 
 ## 1.3. Análisis gráfico
 
-*Nota 1: Se sugiere siempre graficar la serie e identificar sus componentes y/o comportamiento que llamen la atención y contribuyan a la modelación*
+*Nota 2: ¿Qué elementos tiene la variable?*
 
 ```{r g1}
-plot(td,type="l") # type="l" significa grafico de linea
+
+plot(td,type = "l", ylab='Porcentaje', xlab='')
+title(main = "Tasa de Desempleo Nacional \n 2001-2020")
+grid()
+
 ```
 
-El código anterior crea un gráfico bastante sencillo que para un análisis rápido puede ser util. Sin embargo, para propósitos de una presentación se puede hacer algo más presentable.
-
-```{r g2}
-plot(td,type="l", ylab='Porcentaje', xlab='')
-title(main = "Tasa de Desemplo Nacional \n 2001-2020") # \n genera una segunda linea en el titulo
-grid()                                                 # agrega lineas secundarias
-```
-
-*Nota 2: De nuevo existen muchas formas de graficar en R, esta es solo una pequeña muestra sobre cómo mejorar los graficos. La libreria mas recomendanda para graficar es ggplot2.*
-
-¿Qué elementos, componentes o hechos relevantes puede identificar?
 
 # 2. Estimación del Modelo Polinomial
 
-## 2.1. Creación de variables
+# 2.1. Creación de variables
 
-Por un análisis previo se identificó un candidato de polinomio de grado 6. Además, se incluyen 3 dummies para enero, octubre y noviembre y una dummy para el efecto de la Pandemia. 
+*Nota 3: Para crear la variable t y todas las variables auxiliares (dummies)*
+*Nota 4: Este proceso es itearativo*
 
-Es decir, es necesario crear dichas variables $t$ y sus transformaciones $t^p$ con $p=1,2,3,...$ más la dummies que ayudan a incorporar estacionalidad, cambios estructurales o comportamiento atipicos. Para ello se requiere ejecutar las siguientes lineas:
+```{r  dx}
 
-*Nota: Este es un proceso iterativo, el grado del polinomio y las dummies correspondientes son producto de realizar varias estimaciones hasta encontrar el "mejor" modelo*
+# Crear la variable t
 
-```{r dx}
-# Crear la variable "t"
-
-T  = length(td)  
-t  = seq(1,T)
+T = length(td)    # número de observaciones
+t = seq(1,T)
 t2 = t^2
 t3 = t^3
 t4 = t^4
 t5 = t^5
 t6 = t^6
 
-# Crear las dummies
+# Dummies
 
-dene = as.numeric(months(Fecha) == "January")   # estacionalidad
-doct = as.numeric(months(Fecha) == "October")   # estacionalidad
-dnov = as.numeric(months(Fecha) == "November")  # estacionalidad
-d20_1  = as.numeric(Fecha >="2020-04-01" & Fecha <= "2020-05-01")         # Pandemia 2020
+# Estacionalidad
+
+dene = as.numeric(months(Fecha) == "January")
+doct = as.numeric(months(Fecha) == "October")
+dnov = as.numeric(months(Fecha) == "November")
+
+# Pandemia 2020
+
+d20_1  = as.numeric(Fecha >="2020-04-01" & Fecha <= "2020-05-01")         
 d20_2  = as.numeric(Fecha >="2020-06-01" & Fecha <= "2020-07-01")
 d20_3  = as.numeric(Fecha >="2020-08-01" & Fecha <= "2020-10-01")
 d20_4  = as.numeric(Fecha >= "2020-11-01")
 
 ```
 
-## 2.2. Regresión
+# 2.2. Regresión
 
-La regresion queda guardada en R_pol y con la función "summary" se obtiene el resultado de dicha regresión. La presentación es muy similar a la de otros paquetes estadísticos.
+*Nota 5: Vamos a utilizar data frames para facilitar los cálculos.*
+*Nota 6: OJO, PILAS... TODOS los coeficientes deben ser significativos*
 
 ```{r reg}
-dr     = data.frame(td,t,t2,t3,t4,t5,t6,dene,doct,dnov,d20_1,d20_2,d20_3,d20_4, row.names = Fecha)
+
+dr    = data.frame(td,t,t2,t3,t4,t5,t6,dene,doct,dnov,d20_1,d20_2,d20_3,d20_4, row.names = Fecha)
 R_pol = lm(td~., data = dr)
 summary(R_pol)
+
 ```
 
-Note que el data.frame llamado "dr" esta ubicado en el espacio de Data del Enviroement, y al hacer clic se ve cuales son sus elementos. Además, en la funcion "lm" se debe establecer que los datos a utilizar son el grupo que se creó "dr". De ahora en adelante, se sugiere seguir utilizando las estructuras de data.frame en la medida que facilitan la programación.
+# 2.3. Supuestos
 
-¿Cuáles son las conclusiones de las pruebas de significancia individual?
-¿Cómo se interpretan los coeficientes de las dummies?
+```{r}
 
-## 2.3. Supuestos
-
-*Nota 1: Por el momento, se hace el análisis sobre los tres más importantes: No autocorrelación, Homocedasticidad y Normalidad*
-
-*Nota 2: Las pruebas y sus resultados se leen igual que siempre, se escoge un nivel de significancia ($\alpha$) y se compara contra el p-valor*
-
-```{r rsupuestos}
-
+# error estimado
 e_hat = R_pol$residuals
-#e_hat
 plot(e_hat, type = "l")
 grid()
 
-#No Autocorrelación (Breusch-Godfrey Test)
+# No Autocorrelación (Breusch-Godfrey Test)
 library(lmtest)
 bgtest(R_pol, order = 6)
 
@@ -144,7 +125,7 @@ library(tseries)
 jarque.bera.test(e_hat)
 
 # Homocedasticidad (Breusch-Pagan Test)
-bptest(R_pol, )
+bptest(R_pol)
 
 ```
 
@@ -166,13 +147,12 @@ grid()                                                     # agrega lineas secun
 
 ¿Qué se puede inferir del gráfico acerca del ajuste del modelo?
 
-¿Qué se puede inferir del gráfico acerca del ajuste del modelo?
 
 # 3. Pronósticos
 
 ## 3.1. División de la muestra
 
-A continuación, se busca realizar un pronóstico con submuestra de prueba. Es decir, se re-estima el modelo hasta 2020-04 y la proyección se realiza para 2020-05/2020-06.
+A continuación, se busca realizar un pronóstico con submuestra de prueba. Es decir, se re-estima el modelo hasta 2020-11 y la proyección se realiza para 2020-12.
 
 *Nota: Recuerde que algunas líneas atrás, ya se creó un data frame con todas las observaciones llamado dr*
 
@@ -208,7 +188,7 @@ bptest(R_pol2)
 
 ```{r pred}
 # Predicción
-pred = predict(R_pol2, newdata = o_bd, interval = "prediction")
+pred = predict(R_pol2, newdata = o_bd, interval = "confidence")
 pred
 ```
 
@@ -219,4 +199,84 @@ library(Metrics)
 rmse(o_bd$td,pred[,1])
 mae(o_bd$td,pred[,1])
 mape(o_bd$td,pred[,1])*100
+```
+
+# 4. Pronóstico por fuera de muestra
+
+# 4.1. Crear "los nuevos datos"
+
+```{r nd}
+# Fechas que quiero proyectar
+Fecha2 = seq(as.Date("2021-01-01"), as.Date("2021-06-01"), by = "months") # secuencia
+h = length(Fecha2)                                                        # número de datos a proyectar
+
+# Espacio para "nuevos datos"
+
+ppf = data.frame(matrix(ncol=ncol(dr), nrow=h), row.names = Fecha2)       # data.frame vacio para los nuevos datos
+colnames(ppf) = colnames(dr)                                              # nombre de las columnas iguales al original
+
+# Polinomial
+
+ppf$t = seq(T+1,T+h)
+ppf$t2 = ppf$t^2
+ppf$t3 = ppf$t^3
+ppf$t4 = ppf$t^4
+ppf$t5 = ppf$t^5
+ppf$t6 = ppf$t^6
+
+# Dummies
+
+# Estacionalidad
+
+ppf$dene = as.numeric(months(Fecha2) == "January")
+ppf$doct = as.numeric(months(Fecha2) == "October")
+ppf$dnov = as.numeric(months(Fecha2) == "November")
+
+# Pandemia 2020
+
+ppf$d20_1  = as.numeric(Fecha2 >="2020-04-01" & Fecha2 <= "2020-05-01")         
+ppf$d20_2  = as.numeric(Fecha2 >="2020-06-01" & Fecha2 <= "2020-07-01")
+ppf$d20_3  = as.numeric(Fecha2 >="2020-08-01" & Fecha2 <= "2020-10-01")
+ppf$d20_4  = as.numeric(Fecha2 >="2020-11-01")
+
+```
+
+# 4.2. Calcular el pronóstico
+
+```{r pred2}
+
+pred2 = predict(R_pol, newdata = ppf, interval = "confidence")
+pred2
+```
+
+# 4.3. Gráfico
+
+```{r g4}
+
+# Espacio para el gráfico
+
+fg  = c(Fecha,Fecha2)                                            # unión de fechas 
+gpf = data.frame(matrix(ncol=4, nrow=T+h), row.names = fg)       # data.frame vacio para los datos del gráfico
+colnames(gpf) = c("td","p","l","u")
+
+gpf$td[1:T] = td                                                 # valor observado
+
+gpf$p[T] = td[T]
+gpf$p[(T+1):(T+h)] = pred2[,1]                                    # valor pronosticado
+
+gpf$l[T] = td[T]
+gpf$l[(T+1):(T+h)] = pred2[,2]                                    # valor lwr
+
+gpf$u[T] = td[T]
+gpf$u[(T+1):(T+h)] = pred2[,3]                                    # valor upr
+
+
+matplot(gpf,type="l",
+        lwd = c(2,2,2,2),
+        col = c("black","blue","red","red"),
+        ylab='Porcentaje', xlab='')
+title(main = "Tasa de Desemplo Nacional 01-20 \n Pronóstico a junio-21")     # \n genera una segunda linea en el titulo
+legend(x = "topleft", legend = c("Obs.","Proy.","Lím. Inf","Lím. Sup"),
+       lty = c(1,2,2,2), lwd = c(2,2,2,2), col = c("black","blue","red","red")) # agrega leyenda al grafico
+grid()                                                     # agrega lineas secundarias
 ```
