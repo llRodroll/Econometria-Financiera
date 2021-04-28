@@ -34,6 +34,7 @@ desempleo <- read_excel("C:/Users/Rodro/Documents/R/Econometria-Financiera/ARIMA
 td = desempleo$TD
 td = ts(td, start = c(2001,1), end = c(2021,2), frequency = 12)
 Fecha  = as.Date(desempleo$Fecha, format="%Y-%m")
+T      = length(td)
 ```
 
 ## 1.3. Análisis gráfico
@@ -229,14 +230,14 @@ MTS::archTest(e_hat2, lag = 12)
 
 ```
 
-## 3.3. Pronóstico
+## 6.3. Pronóstico
 
 ```{r pred}
 fore = forecast::forecast(M2, h = 3, xreg = as.matrix(o_bd[,-1]), level = 95)
 fore
 ```
 
-## 3.4. Medidas de error de pronóstico
+## 6.4. Medidas de error de pronóstico
 
 ```{r errped}
 library(Metrics)
@@ -245,6 +246,73 @@ mae(o_bd$td,fore$mean)
 mape(o_bd$td,fore$mean)*100
 ```
 
+# 7. Pronóstico por fuera de muestra
 
-####
+# 7.1. Crear "los nuevos datos"
+
+```{r nd}
+# Fechas que quiero proyectar
+Fecha2 = seq(as.Date("2021-03-01"), as.Date("2021-08-01"), by = "months") # secuencia
+h = length(Fecha2)                                                        # número de datos a proyectar
+
+# Espacio para "nuevos datos"
+
+ppf = data.frame(matrix(ncol=ncol(dr), nrow=h), row.names = Fecha2)       # data.frame vacio para los nuevos datos
+colnames(ppf) = colnames(dr)                                              # nombre de las columnas iguales al original
+
+# Dummies
+
+# Estacionalidad
+
+ppf$dene = as.numeric(months(Fecha2) == "January")
+ppf$doct = as.numeric(months(Fecha2) == "October")
+ppf$dnov = as.numeric(months(Fecha2) == "November")
+
+# Pandemia 2020
+
+ppf$d20  = as.numeric(Fecha2 >="2020-04-01" & Fecha2 <= "2020-07-01")         # Pandemia 2020
+ppf$d1   = as.numeric(Fecha2 == "2020-08-01")
+ppf$d2   = as.numeric(Fecha2 == "2003-03-01" | Fecha2 == "2003-12-01" | 
+                  Fecha2 == "2005-01-01")
+
+```
+
+# 7.2. Calcular el pronóstico
+
+```{r pred2}
+fore2 = forecast::forecast(M1, h = 6, xreg = as.matrix(ppf[,-1]), level = 95)
+fore2
+```
+
+# 4.3. Gráfico
+
+```{r g4, echo=FALSE}
+
+# Espacio para el gráfico
+
+fg  = c(Fecha,Fecha2)                                            # unión de fechas 
+gpf = data.frame(matrix(ncol=4, nrow=T+h), row.names = fg)       # data.frame vacio para los datos del gráfico
+colnames(gpf) = c("td","p","l","u")
+
+gpf$td[1:T] = td                                                 # valor observado
+
+gpf$p[T] = td[T]
+gpf$p[(T+1):(T+h)] = fore2$mean                                    # valor pronosticado
+
+gpf$l[T] = td[T]
+gpf$l[(T+1):(T+h)] = fore2$lower                                    # valor lo 95
+
+gpf$u[T] = td[T]
+gpf$u[(T+1):(T+h)] = fore2$upper                                    # valor upr
+
+
+matplot(gpf,type="l",
+        lwd = c(2,2,2,2),
+        col = c("black","blue","red","red"),
+        ylab='Porcentaje', xlab='')
+title(main = "Tasa de Desemplo Nacional 01-21 \n Pronóstico a agosto-21")     # \n genera una segunda linea en el titulo
+legend(x = "topleft", legend = c("Obs.","Proy.","Lím. Inf","Lím. Sup"),
+       lty = c(1,2,2,2), lwd = c(2,2,2,2), col = c("black","blue","red","red")) # agrega leyenda al grafico
+grid()                                                     # agrega lineas secundarias
+```
 
