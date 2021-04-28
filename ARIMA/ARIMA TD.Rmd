@@ -125,17 +125,21 @@ d2   = as.numeric(Fecha == "2003-03-01" | Fecha == "2003-12-01" |
 ## 4.2. ARIMA
 
 ```{r ar, message = FALSE}
-library(lmtest) # prueba de significancia
 
-#M1 = arima(td,order = c(1,1,1),
-#           xreg = cbind(dene,doct,dnov,d20,d1))  # ARIMA(p,d,q)
+dr = data.frame(td,dene,doct,dnov,d20,d1,d2, row.names = Fecha)
+
+library(lmtest) # prueba de significancia
+library(forecast)
+
+#M1 = forecast::Arima(td,order = c(1,1,1),
+#           xreg = as.matrix(dr[,-1]))  # ARIMA(p,d,q)
 #coeftest(M1)
 
-M1 = arima(td, order = c(3,1,12),
-           xreg = cbind(dene,doct,dnov,d20,d1,d2),
-           fixed = c(NA,NA,NA,
-                     0,0,0,0,0,0,0,0,0,0,0,NA,
-                     NA,NA,NA,NA,NA,NA))  
+M1 = forecast::Arima(td, order = c(3,1,12),
+                     xreg = as.matrix(dr[,-1]),
+                     fixed = c(NA,NA,NA,
+                               0,0,0,0,0,0,0,0,0,0,0,NA,
+                               NA,NA,NA,NA,NA,NA))  
 coeftest(M1)
 
 ```
@@ -144,13 +148,13 @@ coeftest(M1)
 
 ```{r oe, message = FALSE,echo=FALSE}
 
-td_p = td - M1$residuals
-tmp2 = data.frame(td,td_p,Fecha)
+td_e = td - M1$residuals
+tmp2 = data.frame(td,td_e,Fecha)
 
 g3 = ggplot(tmp2) 
 g3 + 
   geom_line(aes(x=Fecha,y=td),color='blue', size = 1) +
-  geom_line(aes(x=Fecha,y=td_p),color='red', size = 1, linetype = "dashed") + 
+  geom_line(aes(x=Fecha,y=td_e),color='red', size = 1, linetype = "dashed") + 
   ylab(TeX("Porcentaje")) +
   xlab(TeX("Fecha")) + 
   ggtitle(TeX("Tasa de Desemplo Nacional 2001-2020")) + theme(plot.title = element_text(hjust = 0.5))
@@ -175,7 +179,72 @@ library(tseries)
 jarque.bera.test(e_hat)
 
 # homocedasticidad
-
-arch.test(M1)
+library(MTS)
+MTS::archTest(e_hat, lag = 12)
 
 ```
+
+# 6. Pronósticos
+
+## 6.1. División de la muestra
+
+A continuación, se busca realizar un pronóstico con submuestra de prueba. Es decir, se re-estima el modelo hasta 2020-11 y la proyección se realiza a partir de 2020-12.
+
+```{r frames}
+# Definir el subconjunto de observaciones para realizar la re-estimacion
+s_bd = subset.data.frame(dr, Fecha<="2020-11-01")
+# Definir el subconjunto de observaciones para comparar el pronóstico
+o_bd = subset.data.frame(dr, Fecha>="2020-12-01")
+```
+
+## 6.2. Re-estimación del modelo y Comprobación de Supuestos
+
+```{r ar2, message = FALSE}
+
+M2 = forecast::Arima(s_bd$td, order = c(3,1,12),
+                     xreg = as.matrix(s_bd[,-1]),
+                     fixed = c(NA,NA,NA,
+                               0,0,0,0,0,0,0,0,0,0,0,NA,
+                               NA,NA,NA,NA,NA,NA))
+coeftest(M2)
+
+```
+```{r supuestos2, message=FALSE}
+
+e_hat2 = M2$residuals
+plot(e_hat2)
+
+#Autocorrelacion
+par(mfrow=c(2,1))
+acf(e_hat2, main = "Correlograma de los Residuos" )
+pacf(e_hat2, main = '')
+
+# normalidad
+library(tseries)
+jarque.bera.test(e_hat2)
+
+# homocedasticidad
+
+MTS::archTest(e_hat2, lag = 12)
+
+```
+
+## 3.3. Pronóstico
+
+```{r pred}
+fore = forecast::forecast(M2, h = 3, xreg = as.matrix(o_bd[,-1]), level = 95)
+fore
+```
+
+## 3.4. Medidas de error de pronóstico
+
+```{r errped}
+library(Metrics)
+rmse(o_bd$td,fore$mean)
+mae(o_bd$td,fore$mean)
+mape(o_bd$td,fore$mean)*100
+```
+
+
+####
+
