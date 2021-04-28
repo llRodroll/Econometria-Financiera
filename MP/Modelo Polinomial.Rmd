@@ -52,7 +52,7 @@ Fecha = as.Date(desempleo$Fecha, format = "%Y-%m")
 ```{r g1}
 
 plot(td,type = "l", ylab='Porcentaje', xlab='')
-title(main = "Tasa de Desempleo Nacional \n 2001-2020")
+title(main = "Tasa de Desempleo Nacional \n 2001-2021")
 grid()
 
 ```
@@ -139,7 +139,7 @@ matplot(tmp,type="l",
         lwd = c(2,2),
         col = c("black","red"),
         ylab='Porcentaje', xlab='')
-title(main = "Tasa de Desemplo Nacional \n 2001-2020")     # \n genera una segunda linea en el titulo
+title(main = "Tasa de Desemplo Nacional \n 2001-2021")     # \n genera una segunda linea en el titulo
 legend(x = "topleft", legend = c("Obs.","Est."),
        lty = c(1,2), lwd = c(2,2), col = c("black","red")) # agrega leyenda al grafico
 grid()                                                     # agrega lineas secundarias
@@ -275,7 +275,7 @@ matplot(gpf,type="l",
         lwd = c(2,2,2,2),
         col = c("black","blue","red","red"),
         ylab='Porcentaje', xlab='')
-title(main = "Tasa de Desemplo Nacional 01-20 \n Pronóstico a agosto-21")     # \n genera una segunda linea en el titulo
+title(main = "Tasa de Desemplo Nacional 01-21 \n Pronóstico a agosto-21")     # \n genera una segunda linea en el titulo
 legend(x = "topleft", legend = c("Obs.","Proy.","Lím. Inf","Lím. Sup"),
        lty = c(1,2,2,2), lwd = c(2,2,2,2), col = c("black","blue","red","red")) # agrega leyenda al grafico
 grid()                                                     # agrega lineas secundarias
