@@ -107,6 +107,7 @@ par(mfrow=c(2,1))
 acf(diff(td), main = "Correlograma de la primera diferencia de TD" )
 pacf(diff(td), main = '')
 ```
+
 # 4. Estimación
 
 ## 4.1. Creación de variables
