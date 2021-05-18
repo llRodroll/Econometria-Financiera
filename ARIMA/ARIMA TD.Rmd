@@ -285,7 +285,7 @@ fore2 = forecast::forecast(M1, h = 6, xreg = as.matrix(ppf[,-1]), level = 95)
 fore2
 ```
 
-# 4.3. Gráfico
+# 7.3. Gráfico
 
 ```{r g4, echo=FALSE}
 
