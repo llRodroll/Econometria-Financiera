@@ -41,7 +41,7 @@ desempleo = read_excel("C:/Users/Rodro/Documents/R/Econometria-Financiera/MP/BD_
 ## 1.2. Definición de varibales
 
 ```{r def}
-td    = ts(desempleo$TD, start = c(2001,1), end = c(2021,02), frequency = 12)
+td    = ts(desempleo$TD, start = c(2001,1), end = c(2021,06), frequency = 12)
 Fecha = as.Date(desempleo$Fecha, format = "%Y-%m") 
 ```
 
@@ -118,7 +118,7 @@ grid()
 
 # No Autocorrelación (Breusch-Godfrey Test)
 library(lmtest)
-bgtest(R_pol, order = 6)
+bgtest(R_pol, order = 10)
 
 # Normalidad
 library(tseries)
