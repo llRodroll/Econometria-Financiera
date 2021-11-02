@@ -19,7 +19,7 @@ rm(list=ls())
 
 # 1. Base de datos - Variable
 
-La variable a utilizar es la Tasa de Desempleo (sin desestacionalizar) de Colombia, calculada y publicada por el Departamento Administrativo Nacional de Estadísticas (DANE). La variable está en porcentaje, para un periodo desde enero de 2001 hasta febrero de 2021 (242 observaciones) con una frecuencia mensual.
+La variable a utilizar es la Tasa de Desempleo (sin desestacionalizar) de Colombia, calculada y publicada por el Departamento Administrativo Nacional de Estadísticas (DANE). La variable está en porcentaje, para un periodo desde enero de 2001 hasta septiembre de 2022 (249 observaciones) con una frecuencia mensual.
 
 ## 1.1. Importar Base
 
@@ -118,8 +118,13 @@ pacf(diff(td), main = '')
 dene = as.numeric(months(Fecha) == "January")   # estacionalidad
 doct = as.numeric(months(Fecha) == "October")   # estacionalidad
 dnov = as.numeric(months(Fecha) == "November")  # estacionalidad
-d20  = as.numeric(Fecha >="2020-04-01" & Fecha <= "2020-07-01")         # Pandemia 2020
+
+# Pandemia 2020
+
+d20  = as.numeric(Fecha >="2020-04-01" & Fecha <= "2020-07-01")         
 d1   = as.numeric(Fecha == "2020-08-01")
+
+# Datos atípicos
 d2   = as.numeric(Fecha == "2003-03-01" | Fecha == "2003-12-01" | 
                   Fecha == "2005-01-01")
 ```
@@ -190,7 +195,7 @@ MTS::archTest(e_hat, lag = 12)
 
 ## 6.1. División de la muestra
 
-A continuación, se busca realizar un pronóstico con submuestra de prueba. Es decir, se re-estima el modelo hasta 2020-11 y la proyección se realiza a partir de 2020-12.
+A continuación, se busca realizar un pronóstico con submuestra de prueba. Es decir, se re-estima el modelo hasta 2021-06 y la proyección se realiza a partir de 2021-07.
 
 ```{r frames}
 # Definir el subconjunto de observaciones para realizar la re-estimacion
@@ -271,8 +276,10 @@ ppf$dnov = as.numeric(months(Fecha2) == "November")
 
 # Pandemia 2020
 
-ppf$d20  = as.numeric(Fecha2 >="2020-04-01" & Fecha2 <= "2020-07-01")         # Pandemia 2020
+ppf$d20  = as.numeric(Fecha2 >="2020-04-01" & Fecha2 <= "2020-07-01")         
 ppf$d1   = as.numeric(Fecha2 == "2020-08-01")
+
+# Datos atípicos
 ppf$d2   = as.numeric(Fecha2 == "2003-03-01" | Fecha2 == "2003-12-01" | 
                   Fecha2 == "2005-01-01")
 
