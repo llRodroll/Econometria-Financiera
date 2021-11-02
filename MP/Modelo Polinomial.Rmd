@@ -41,7 +41,7 @@ desempleo = read_excel("C:/Users/Rodro/Documents/R/Econometria-Financiera/MP/BD_
 ## 1.2. Definición de varibales
 
 ```{r def}
-td    = ts(desempleo$TD, start = c(2001,1), end = c(2021,06), frequency = 12)
+td    = ts(desempleo$TD, start = c(2001,1), end = c(2021,09), frequency = 12)
 Fecha = as.Date(desempleo$Fecha, format = "%Y-%m") 
 ```
 
@@ -207,7 +207,7 @@ mape(o_bd$td,pred[,1])*100
 
 ```{r nd}
 # Fechas que quiero proyectar
-Fecha2 = seq(as.Date("2021-03-01"), as.Date("2021-08-01"), by = "months") # secuencia
+Fecha2 = seq(as.Date("2021-10-01"), as.Date("2022-06-01"), by = "months") # secuencia
 h = length(Fecha2)                                                        # número de datos a proyectar
 
 # Espacio para "nuevos datos"
@@ -275,7 +275,7 @@ matplot(gpf,type="l",
         lwd = c(2,2,2,2),
         col = c("black","blue","red","red"),
         ylab='Porcentaje', xlab='')
-title(main = "Tasa de Desemplo Nacional 01-21 \n Pronóstico a agosto-21")     # \n genera una segunda linea en el titulo
+title(main = "Tasa de Desemplo Nacional 01-21 \n Pronóstico a junio-22")     # \n genera una segunda linea en el titulo
 legend(x = "topleft", legend = c("Obs.","Proy.","Lím. Inf","Lím. Sup"),
        lty = c(1,2,2,2), lwd = c(2,2,2,2), col = c("black","blue","red","red")) # agrega leyenda al grafico
 grid()                                                     # agrega lineas secundarias
